@@ -1,14 +1,20 @@
-/* Mobile-first base */
+/* =========================
+   CSE Motors 
+otni
+   ========================= */
+
 :root{
   --bg: #0b1220;
   --panel: #121a2a;
+  --panel-2: rgba(255,255,255,.04);
   --text: #f5f7ff;
   --muted: #c7d0ea;
-  --accent: #3b82f6;
+  --accent: #4aa3ff;
   --border: #23314d;
 }
 
 *{ box-sizing: border-box; }
+
 body{
   margin: 0;
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
@@ -17,8 +23,17 @@ body{
   line-height: 1.5;
 }
 
+img{ max-width: 100%; display: block; }
+
 a{ color: inherit; }
 
+/* ===== Layout wrapper ===== */
+.content{
+  width: min(1100px, 92%);
+  margin: 16px auto 28px;
+}
+
+/* ===== Header / Nav (si los usas en tus partials) ===== */
 .site-header{
   display:flex;
   justify-content:space-between;
@@ -65,42 +80,57 @@ a{ color: inherit; }
   color: var(--text);
 }
 
-.content{
-  width: min(1100px, 92%);
-  margin: 16px auto 28px;
+/* ===== Typography ===== */
+h1{
+  margin: 18px 0 14px;
+  font-size: 2rem;
+  letter-spacing: .2px;
 }
 
+h2{
+  margin: 0 0 10px;
+  font-size: 1.4rem;
+}
+
+/* ===== Hero ===== */
 .hero{
-  display:grid;
-  gap: 12px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
   background: linear-gradient(135deg, #16223a, #0b1220);
   border: 1px solid var(--border);
   border-radius: 18px;
-  overflow:hidden;
+  overflow: hidden;
+  padding: 14px;
 }
 
-.hero__image img{
-  width:100%;
-  display:block;
-  height:auto;
+.hero-content{
+  width: fit-content;
+  background: rgba(0,0,0,0.18);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 14px 14px 16px;
 }
 
-.hero__content{
-  padding: 14px 16px 18px;
+.hero-content h2{
+  color: var(--accent);
+  margin: 0 0 10px;
+  font-size: 1.5rem;
 }
 
-.hero__title{
-  margin:0 0 6px;
-  font-size: 1.6rem;
-}
-
-.hero__subtitle{
-  margin:0 0 12px;
+.hero-features{
+  margin: 0;
+  padding-left: 18px;
   color: var(--muted);
+}
+
+.hero-features li{
+  margin: 4px 0;
 }
 
 .btn{
   display:inline-block;
+  margin-top: 12px;
   background: var(--accent);
   color: #081225;
   font-weight: 800;
@@ -109,57 +139,86 @@ a{ color: inherit; }
   border-radius: 12px;
 }
 
-.home-grid{
-  margin-top: 16px;
-  display:grid;
-  gap: 14px;
+/* Control de imagen del hero */
+.hero-image img{
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
 }
 
-.card{
+/* ===== Home sections ===== */
+.home-grid{
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: 1fr; /* mobile: uno debajo del otro */
+  gap: 18px;
+}
+
+/* Reviews box */
+.reviews{
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 18px;
   padding: 14px 14px 16px;
 }
 
-.card__title{
+.reviews h2{
   margin: 0 0 10px;
-  font-size: 1.2rem;
 }
 
-.upgrade-list{
-  list-style:none;
-  padding:0;
-  margin:0;
-  display:grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-
-.upgrade-item a{
-  display:grid;
-  gap: 6px;
-  justify-items:center;
-  text-decoration:none;
-  background: rgba(255,255,255,.04);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 10px;
-}
-
-.upgrade-item img{
-  width: 90px;
-  height: 60px;
-  object-fit: cover;
-  border-radius: 10px;
-}
-
-.review-list{
-  margin:0;
+.reviews ul{
+  margin: 0;
   padding-left: 18px;
   color: var(--muted);
 }
 
+.reviews li{
+  margin: 8px 0;
+}
+
+/* Upgrades box */
+.upgrades{
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 14px 14px 16px;
+}
+
+.upgrades h2{
+  margin: 0 0 12px;
+}
+
+/* Upgrades grid (2x2 en mobile como la imagen ejemplo) */
+.upgrade-grid{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.upgrade-card{
+  display: grid;
+  place-items: center;
+  text-decoration: none;
+  background: #ffffff;
+  color: #111;
+  border-radius: 12px;
+  padding: 14px 10px;
+  min-height: 130px;
+  box-shadow: 0 2px 10px rgba(0,0,0,.18);
+}
+
+.upgrade-card img{
+  width: 90px;
+  height: 70px;
+  object-fit: contain;
+  margin-bottom: 8px;
+}
+
+.upgrade-card span{
+  font-weight: 700;
+}
+
+/* ===== Footer ===== */
 .site-footer{
   padding: 16px;
   text-align:center;
@@ -167,101 +226,32 @@ a{ color: inherit; }
   border-top: 1px solid var(--border);
 }
 
-/* ONE media query for larger screens */
-@media (min-width: 800px){
+/* ===== ONE media query (desktop) ===== */
+@media screen and (min-width: 900px){
+
+  h1{ font-size: 2.4rem; }
+
   .hero{
-    grid-template-columns: 1.2fr 1fr;
-    align-items: stretch;
+    grid-template-columns: 1.15fr 1fr;
+    align-items: center;
+    padding: 18px;
   }
-  .hero__content{
-    padding: 18px 18px 22px;
+
+  .hero-image img{
+    border-radius: 14px;
   }
-  .hero__title{
-    font-size: 2.1rem;
-  }
+
   .home-grid{
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr; /* desktop: lado a lado */
     align-items: start;
   }
-}
-.hero {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
-  align-items: center;
-  margin: 1.5rem 0;
-}
 
-.hero-content {
-  color: #4aa3ff;
-  background: rgba(0,0,0,0.2);
-  padding: 1rem;
-  border-radius: 8px;
-  width: fit-content;
-}
+  /* En desktop normalmente Upgrades izquierda y Reviews derecha (si quieres) */
+  .upgrades{ order: 1; }
+  .reviews{ order: 2; }
 
-.hero-content h2 {
-  margin: 0 0 .5rem 0;
-}
-
-.btn {
-  display: inline-block;
-  margin-top: .75rem;
-  padding: .5rem .9rem;
-  background: #4aa3ff;
-  color: #0b1020;
-  text-decoration: none;
-  font-weight: 700;
-  border-radius: 6px;
-}
-
-.hero-image img {
-  width: 100%;
-  max-width: 550px;
-  height: auto;
-}
-
-.home-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 2rem;
-  margin-top: 2rem;
-}
-
-.upgrade-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-}
-
-.upgrade-card {
-  display: grid;
-  place-items: center;
-  text-decoration: none;
-  background: white;
-  padding: .75rem;
-  border-radius: 8px;
-  color: #111;
-  font-weight: 600;
-}
-
-.upgrade-card img {
-  width: 80px;
-  height: auto;
-  margin-bottom: .5rem;
-}
-
-.reviews ul {
-  padding-left: 1.2rem;
-}
-
-@media screen and (min-width: 768px) {
-  .hero {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .home-grid {
-    grid-template-columns: 1fr 1fr;
-    align-items: start;
+  .upgrade-grid{
+    grid-template-columns: 1fr 1fr; /* se queda 2x2 */
   }
 }
+
