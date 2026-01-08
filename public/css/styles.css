@@ -1,6 +1,267 @@
-/******* Change Box Model ***************/
-*,
-*:before,
-*:after {
-  box-sizing: border-box;
+/* Mobile-first base */
+:root{
+  --bg: #0b1220;
+  --panel: #121a2a;
+  --text: #f5f7ff;
+  --muted: #c7d0ea;
+  --accent: #3b82f6;
+  --border: #23314d;
+}
+
+*{ box-sizing: border-box; }
+body{
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+}
+
+a{ color: inherit; }
+
+.site-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding: 14px 16px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+}
+
+.brand{
+  text-decoration:none;
+  font-weight: 800;
+  letter-spacing: .3px;
+}
+
+.tools__link{
+  text-decoration:none;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.site-nav{
+  background: #0f172a;
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-list{
+  list-style:none;
+  margin:0;
+  padding: 10px 12px;
+  display:flex;
+  gap: 10px;
+  flex-wrap:wrap;
+}
+
+.nav-link{
+  text-decoration:none;
+  color: var(--muted);
+  padding: 8px 10px;
+  border-radius: 10px;
+}
+.nav-link:hover{
+  background: rgba(255,255,255,.06);
+  color: var(--text);
+}
+
+.content{
+  width: min(1100px, 92%);
+  margin: 16px auto 28px;
+}
+
+.hero{
+  display:grid;
+  gap: 12px;
+  background: linear-gradient(135deg, #16223a, #0b1220);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  overflow:hidden;
+}
+
+.hero__image img{
+  width:100%;
+  display:block;
+  height:auto;
+}
+
+.hero__content{
+  padding: 14px 16px 18px;
+}
+
+.hero__title{
+  margin:0 0 6px;
+  font-size: 1.6rem;
+}
+
+.hero__subtitle{
+  margin:0 0 12px;
+  color: var(--muted);
+}
+
+.btn{
+  display:inline-block;
+  background: var(--accent);
+  color: #081225;
+  font-weight: 800;
+  text-decoration:none;
+  padding: 10px 14px;
+  border-radius: 12px;
+}
+
+.home-grid{
+  margin-top: 16px;
+  display:grid;
+  gap: 14px;
+}
+
+.card{
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 14px 14px 16px;
+}
+
+.card__title{
+  margin: 0 0 10px;
+  font-size: 1.2rem;
+}
+
+.upgrade-list{
+  list-style:none;
+  padding:0;
+  margin:0;
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.upgrade-item a{
+  display:grid;
+  gap: 6px;
+  justify-items:center;
+  text-decoration:none;
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 10px;
+}
+
+.upgrade-item img{
+  width: 90px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.review-list{
+  margin:0;
+  padding-left: 18px;
+  color: var(--muted);
+}
+
+.site-footer{
+  padding: 16px;
+  text-align:center;
+  color: var(--muted);
+  border-top: 1px solid var(--border);
+}
+
+/* ONE media query for larger screens */
+@media (min-width: 800px){
+  .hero{
+    grid-template-columns: 1.2fr 1fr;
+    align-items: stretch;
+  }
+  .hero__content{
+    padding: 18px 18px 22px;
+  }
+  .hero__title{
+    font-size: 2.1rem;
+  }
+  .home-grid{
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+}
+.hero {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  align-items: center;
+  margin: 1.5rem 0;
+}
+
+.hero-content {
+  color: #4aa3ff;
+  background: rgba(0,0,0,0.2);
+  padding: 1rem;
+  border-radius: 8px;
+  width: fit-content;
+}
+
+.hero-content h2 {
+  margin: 0 0 .5rem 0;
+}
+
+.btn {
+  display: inline-block;
+  margin-top: .75rem;
+  padding: .5rem .9rem;
+  background: #4aa3ff;
+  color: #0b1020;
+  text-decoration: none;
+  font-weight: 700;
+  border-radius: 6px;
+}
+
+.hero-image img {
+  width: 100%;
+  max-width: 550px;
+  height: auto;
+}
+
+.home-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.upgrade-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.upgrade-card {
+  display: grid;
+  place-items: center;
+  text-decoration: none;
+  background: white;
+  padding: .75rem;
+  border-radius: 8px;
+  color: #111;
+  font-weight: 600;
+}
+
+.upgrade-card img {
+  width: 80px;
+  height: auto;
+  margin-bottom: .5rem;
+}
+
+.reviews ul {
+  padding-left: 1.2rem;
+}
+
+@media screen and (min-width: 768px) {
+  .hero {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .home-grid {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
 }
