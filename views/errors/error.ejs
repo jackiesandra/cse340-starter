@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title || "Server Error" %></title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #fafafa;
+      color: #333;
+      text-align: center;
+      padding: 40px;
+    }
+    .error-container {
+      max-width: 600px;
+      margin: 100px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #d32f2f;
+    }
+    a {
+      display: inline-block;
+      margin-top: 20px;
+      color: #1565c0;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="error-container">
+    <h1>⚠️ Oops! Something went wrong.</h1>
+    <p><%= message || "An unexpected error occurred." %></p>
+    <a href="/">Return to Home</a>
+  </div>
+</body>
+</html>

@@ -1,44 +1,90 @@
-/* ******************************************
- * This server.js file is the primary file of the 
- * application. It is used to control the project.
- *******************************************/
+// ==============================================
+// 🚀 Servidor principal de CSE Motors
+// ==============================================
 
-/* ***********************
- * Require Statements
- *************************/
-const express = require("express")
+// Cargar variables de entorno
 require("dotenv").config()
-const expressLayouts = require("express-ejs-layouts")
+
+// Importar dependencias
+const express = require("express")
+const path = require("path")
+const baseController = require("./controllers/baseController")
+const invRoute = require("./routes/inventoryRoute")
+const utilities = require("./utilities")
+
+// Crear instancia de Express
 const app = express()
-const staticRoutes = require("./routes/static")
 
-/* ***********************
- * View Engine and Templates
- *************************/
+// ==============================================
+// ⚙️ Configuración de vistas EJS
+// ==============================================
 app.set("view engine", "ejs")
-app.use(expressLayouts)
-app.set("layout", "./layouts/layout") // not at views root
+app.set("views", path.join(__dirname, "views"))
 
-/* ***********************
- * Routes
- *************************/
-app.use(staticRoutes)
+// ==============================================
+// 🧩 Middleware para manejar formularios y JSON
+// ==============================================
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 
-// Index Route
-app.get("/", function (req, res) {
-  res.render("index", { title: "Home" })
+// ==============================================
+// 🗂️ Servir archivos estáticos
+// ==============================================
+app.use(express.static(path.join(__dirname, "public")))
+
+// ==============================================
+// 🌍 Variables de entorno y puerto
+// ==============================================
+const PORT = process.env.PORT || 3000
+console.log("🌍 NODE_ENV:", process.env.NODE_ENV || "undefined")
+console.log("🔗 DATABASE_URL:", process.env.DATABASE_URL ? "definida ✅" : "❌ undefined")
+
+// ==============================================
+// 🏠 Rutas principales
+// ==============================================
+app.get("/", utilities.handleErrors(baseController.buildHome)) // Página principal con error handling
+app.use("/inv", invRoute) // Rutas del inventario
+
+// ==============================================
+// ⚠️ Middleware para manejar 404 (manda al error handler)
+// ==============================================
+app.use((req, res, next) => {
+  const err = new Error("The page you are looking for does not exist.")
+  err.status = 404
+  next(err)
 })
 
-/* ***********************
- * Local Server Information
- *************************/
-// ✅ FIX para Render + local
-const port = process.env.PORT || 10000
-const host = process.env.HOST || "0.0.0.0"
+// ==============================================
+// 💥 Middleware general de manejo de errores (404/500/etc.)
+// ==============================================
+app.use(async (err, req, res, next) => {
+  console.error("💥 Error general capturado:", err.stack)
 
-/* ***********************
- * Log statement to confirm server operation
- *************************/
-app.listen(port, () => {
-  console.log(`app listening on ${host}:${port}`)
+  const nav = await utilities.getNav()
+  const status = err.status || 500
+
+  res.status(status).render("errors/error", {
+    title: status === 404 ? "404 - Not Found" : "Server Error",
+    message: err.message || "Something went wrong. Please try again later.",
+    nav,
+  })
+})
+
+// ==============================================
+// 🧰 Manejo global de errores no capturados
+// ==============================================
+process.on("unhandledRejection", (reason, promise) => {
+  console.error("⚠️ Unhandled Rejection at:", promise, "reason:", reason)
+})
+
+process.on("uncaughtException", (err) => {
+  console.error("💥 Uncaught Exception:", err)
+  process.exit(1)
+})
+
+// ==============================================
+// 🚗 Iniciar servidor
+// ==============================================
+app.listen(PORT, () => {
+  console.log(`✅ Servidor corriendo en: http://localhost:${PORT}`)
 })

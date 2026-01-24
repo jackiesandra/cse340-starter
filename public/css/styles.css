@@ -255,3 +255,50 @@ h2{
   }
 }
 
+.vehicle-detail {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.vehicle-detail img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
+.vehicle-info {
+  flex: 1;
+  min-width: 300px;
+}
+.inv-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.inv-detail__media img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.inv-detail__content {
+  line-height: 1.6;
+}
+
+/* Pantallas grandes: imagen y texto lado a lado */
+@media (min-width: 768px) {
+  .inv-detail {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .inv-detail__media {
+    flex: 1;
+  }
+
+  .inv-detail__content {
+    flex: 1;
+  }
+}
