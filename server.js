@@ -82,9 +82,6 @@ process.on("uncaughtException", (err) => {
   process.exit(1)
 })
 
-// ==============================================
-// 🚗 Iniciar servidor
-// ==============================================
-app.listen(PORT, () => {
-  console.log(`✅ Servidor corriendo en: http://localhost:${PORT}`)
+/app.listen(PORT, () => {
+  console.log(`✅ Servidor escuchando en el puerto: ${PORT}`)
 })
