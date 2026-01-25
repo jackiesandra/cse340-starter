@@ -2,24 +2,26 @@
 // 🚀 Servidor principal de CSE Motors
 // ==============================================
 
-// Cargar variables de entorno
 require("dotenv").config()
 
-// Importar dependencias
 const express = require("express")
 const path = require("path")
+const expressLayouts = require("express-ejs-layouts")
+
 const baseController = require("./controllers/baseController")
 const invRoute = require("./routes/inventoryRoute")
 const utilities = require("./utilities")
 
-// Crear instancia de Express
 const app = express()
 
 // ==============================================
-// ⚙️ Configuración de vistas EJS
+// ⚙️ Configuración de vistas EJS + Layouts
 // ==============================================
 app.set("view engine", "ejs")
 app.set("views", path.join(__dirname, "views"))
+
+app.use(expressLayouts)
+app.set("layout", "./layouts/layout")
 
 // ==============================================
 // 🧩 Middleware para manejar formularios y JSON
@@ -28,7 +30,7 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 // ==============================================
-// 🗂️ Servir archivos estáticos
+// 🗂️ Servir archivos estáticos (CSS, imágenes, JS)
 // ==============================================
 app.use(express.static(path.join(__dirname, "public")))
 
@@ -42,11 +44,11 @@ console.log("🔗 DATABASE_URL:", process.env.DATABASE_URL ? "definida ✅" : "�
 // ==============================================
 // 🏠 Rutas principales
 // ==============================================
-app.get("/", utilities.handleErrors(baseController.buildHome)) // Página principal con error handling
-app.use("/inv", invRoute) // Rutas del inventario
+app.get("/", utilities.handleErrors(baseController.buildHome))
+app.use("/inv", invRoute)
 
 // ==============================================
-// ⚠️ Middleware para manejar 404 (manda al error handler)
+// ⚠️ Middleware para manejar 404
 // ==============================================
 app.use((req, res, next) => {
   const err = new Error("The page you are looking for does not exist.")
@@ -58,16 +60,21 @@ app.use((req, res, next) => {
 // 💥 Middleware general de manejo de errores (404/500/etc.)
 // ==============================================
 app.use(async (err, req, res, next) => {
-  console.error("💥 Error general capturado:", err.stack)
+  try {
+    console.error("💥 Error general capturado:", err?.stack || err)
 
-  const nav = await utilities.getNav()
-  const status = err.status || 500
+    const nav = await utilities.getNav()
+    const status = err.status || 500
 
-  res.status(status).render("errors/error", {
-    title: status === 404 ? "404 - Not Found" : "Server Error",
-    message: err.message || "Something went wrong. Please try again later.",
-    nav,
-  })
+    res.status(status).render("errors/error", {
+      title: status === 404 ? "404 - Not Found" : "Server Error",
+      message: err.message || "Something went wrong. Please try again later.",
+      nav,
+    })
+  } catch (e) {
+    console.error("💥 Error dentro del error handler:", e)
+    res.status(500).send("Server Error")
+  }
 })
 
 // ==============================================
@@ -79,9 +86,11 @@ process.on("unhandledRejection", (reason, promise) => {
 
 process.on("uncaughtException", (err) => {
   console.error("💥 Uncaught Exception:", err)
-  process.exit(1)
 })
 
-/app.listen(PORT, () => {
-  console.log(`✅ Servidor escuchando en el puerto: ${PORT}`)
+// ==============================================
+// ▶️ ARRANQUE DEL SERVIDOR
+// ==============================================
+app.listen(PORT, () => {
+  console.log(`✅ Server running on port: ${PORT}`)
 })

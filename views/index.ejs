@@ -1,15 +1,70 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title><%= title %></title>
-</head>
-<body>
-  <header>
-    <%- include('partials/navigation') %>
-  </header>
-  <main>
-    <h1>Bienvenido al sitio MVC</h1>
-  </main>
-</body>
-</html>
+<section class="hero">
+  <h1 class="hero__title">Welcome to CSE Motors!</h1>
+
+  <div class="hero__wrap">
+    <!-- 🔥 IMAGEN REAL DEL CARRO -->
+    <img
+      class="hero__img"
+      src="/images/vehicles/delorean.jpg"
+      alt="DMC DeLorean"
+    />
+
+    <div class="hero__info">
+      <h2>DMC Delorean</h2>
+      <ul>
+        <li>3 Cup holders</li>
+        <li>Superman doors</li>
+        <li>Fuzzy dice!</li>
+      </ul>
+
+      <a class="hero__btn" href="/inv">Own Today</a>
+    </div>
+  </div>
+</section>
+
+<section class="home-grid">
+  <div class="upgrades">
+    <h2>Delorean Upgrades</h2>
+
+    <div class="upgrades__grid">
+      <a class="upgrade-card" href="#">
+        <div class="upgrade-card__img">
+          <img src="/images/upgrades/flux-cap.png" alt="Flux Capacitor" />
+        </div>
+        <span>Flux Capacitor</span>
+      </a>
+
+      <a class="upgrade-card" href="#">
+        <div class="upgrade-card__img">
+          <img src="/images/upgrades/flame.jpg" alt="Flame Decals" />
+        </div>
+        <span>Flame Decals</span>
+      </a>
+
+      <a class="upgrade-card" href="#">
+        <div class="upgrade-card__img">
+          <img src="/images/upgrades/bumper_sticker.jpg" alt="Bumper Stickers" />
+        </div>
+        <span>Bumper Stickers</span>
+      </a>
+
+      <a class="upgrade-card" href="#">
+        <div class="upgrade-card__img">
+          <img src="/images/upgrades/hub-cap.jpg" alt="Hub Caps" />
+        </div>
+        <span>Hub Caps</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="reviews">
+    <h2>DMC Delorean Reviews</h2>
+    <ul class="reviews__list">
+      <li>"So fast it's almost like traveling in time." (4/5)</li>
+      <li>"Coolest ride on the road." (4/5)</li>
+      <li>"I'm feeling McFly" (5/5)</li>
+      <li>"The most futuristic ride of our day." (4.5/5)</li>
+      <li>"80's livin and I love it!" (5/5)</li>
+    </ul>
+  </div>
+</section>

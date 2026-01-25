@@ -9,15 +9,20 @@ const invController = {}
 invController.buildByClassificationId = async function (req, res, next) {
   try {
     const classification_id = Number(req.params.classification_id)
+
+    if (!Number.isInteger(classification_id) || classification_id <= 0) {
+      const err = new Error("Invalid classification id.")
+      err.status = 404
+      return next(err)
+    }
+
     const data = await invModel.getInventoryByClassificationId(classification_id)
     const nav = await utilities.getNav()
 
     if (!data || data.length === 0) {
-      return res.status(404).render("errors/error", {
-        title: "No Vehicles Found",
-        message: "No vehicles were found for this classification.",
-        nav,
-      })
+      const err = new Error("No vehicles were found for this classification.")
+      err.status = 404
+      return next(err)
     }
 
     const grid = utilities.buildClassificationGrid(data)
@@ -39,23 +44,31 @@ invController.buildByClassificationId = async function (req, res, next) {
 invController.buildByInvId = async function (req, res, next) {
   try {
     const inv_id = Number(req.params.inv_id)
-    const vehicle = await invModel.getVehicleById(inv_id)
-    const nav = await utilities.getNav()
 
-    if (!vehicle) {
-      return res.status(404).render("errors/error", {
-        title: "Vehicle Not Found",
-        message: "Sorry, we couldn't find that vehicle.",
-        nav,
-      })
+    // ✅ evita NaN
+    if (!Number.isInteger(inv_id) || inv_id <= 0) {
+      const err = new Error("Vehicle not found.")
+      err.status = 404
+      return next(err)
     }
 
-    const html = utilities.buildVehicleHTML(vehicle)
+    const vehicle = await invModel.getVehicleById(inv_id)
+
+    if (!vehicle) {
+      const err = new Error("Sorry, we couldn't find that vehicle.")
+      err.status = 404
+      return next(err)
+    }
+
+    const nav = await utilities.getNav()
+
+    // ✅ utilities envuelve el HTML (requisito)
+    const vehicleHtml = utilities.buildVehicleHTML(vehicle)
 
     res.render("inventory/detail", {
       title: `${vehicle.inv_make} ${vehicle.inv_model}`,
       nav,
-      html,
+      vehicleHtml,
     })
   } catch (err) {
     next(err)

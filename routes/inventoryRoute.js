@@ -15,7 +15,7 @@ router.get(
   utilities.handleErrors(invController.buildByInvId)
 )
 
-// Ruta para probar error 500 (intencional) - pasa por controller
+// Ruta para probar error 500 (intencional)
 router.get(
   "/trigger-error",
   utilities.handleErrors(invController.triggerError)
