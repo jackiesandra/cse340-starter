@@ -1,12 +1,15 @@
 // ==============================================
 // 🚀 Servidor principal de CSE Motors
 // ==============================================
-
 require("dotenv").config()
 
 const express = require("express")
 const path = require("path")
 const expressLayouts = require("express-ejs-layouts")
+
+// Sessions & Messages
+const session = require("express-session")
+const pool = require("./database/")
 
 const baseController = require("./controllers/baseController")
 const invRoute = require("./routes/inventoryRoute")
@@ -28,6 +31,35 @@ app.set("layout", "./layouts/layout")
 // ==============================================
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+
+// ==============================================
+// 🔐 Sessions (guardadas en PostgreSQL)
+// ==============================================
+/* ***********************
+ * Middleware: Session
+ * ************************/
+app.use(
+  session({
+    store: new (require("connect-pg-simple")(session))({
+      createTableIfMissing: true,
+      pool,
+    }),
+    secret: process.env.SESSION_SECRET,
+    resave: true,
+    saveUninitialized: true,
+    name: "sessionId",
+  })
+)
+
+// ==============================================
+// 💬 Flash Messages + Express Messages
+// ==============================================
+// Express Messages Middleware
+app.use(require("connect-flash")())
+app.use(function (req, res, next) {
+  res.locals.messages = require("express-messages")(req, res)
+  next()
+})
 
 // ==============================================
 // 🗂️ Servir archivos estáticos (CSS, imágenes, JS)

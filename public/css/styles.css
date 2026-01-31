@@ -415,3 +415,38 @@ footer a {
     align-items: center;
   }
 }
+.inventory-form {
+  max-width: 900px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group--full {
+  grid-column: 1 / -1;
+}
+
+.inventory-form input,
+.inventory-form textarea {
+  padding: 0.5rem;
+  font-size: 1rem;
+}
+
+.inventory-form textarea {
+  min-height: 120px;
+}
+
+.inventory-form button {
+  padding: 0.7rem 1.2rem;
+  font-size: 1rem;
+  cursor: pointer;
+}

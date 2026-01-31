@@ -1,0 +1,35 @@
+<section class="form-wrapper">
+  <h1><%= title %></h1>
+<% if (locals.notice) { %>
+  <div class="notice"><%= notice %></div>
+<% } %>
+
+  <% if (locals.message) { %>
+    <p class="notice"><%= message %></p>
+  <% } %>
+
+  <% if (errors) { %>
+    <ul class="notice">
+      <% errors.forEach(function(error){ %>
+        <li><%= error.msg %></li>
+      <% }) %>
+    </ul>
+  <% } %>
+
+  <form action="/inv/add-classification" method="post">
+    <label for="classification_name">
+      Classification Name (No spaces or special characters):
+    </label>
+    <input
+      type="text"
+      id="classification_name"
+      name="classification_name"
+      required
+      pattern="^[A-Za-z0-9]+$"
+      title="Letters and numbers only. No spaces or special characters."
+      value="<%= typeof classification_name !== 'undefined' ? classification_name : '' %>"
+    />
+
+    <button type="submit">Add Classification</button>
+  </form>
+</section>

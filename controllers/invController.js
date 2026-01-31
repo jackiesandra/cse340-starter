@@ -4,7 +4,7 @@ const utilities = require("../utilities")
 const invController = {}
 
 /* **************************************
- * Clasificación
+ * Build inventory by classification view
  * ************************************** */
 invController.buildByClassificationId = async function (req, res, next) {
   try {
@@ -39,13 +39,12 @@ invController.buildByClassificationId = async function (req, res, next) {
 }
 
 /* **************************************
- * Detail
+ * Build detail view by inventory id
  * ************************************** */
 invController.buildByInvId = async function (req, res, next) {
   try {
     const inv_id = Number(req.params.inv_id)
 
-    // ✅ evita NaN
     if (!Number.isInteger(inv_id) || inv_id <= 0) {
       const err = new Error("Vehicle not found.")
       err.status = 404
@@ -61,8 +60,6 @@ invController.buildByInvId = async function (req, res, next) {
     }
 
     const nav = await utilities.getNav()
-
-    // ✅ utilities envuelve el HTML (requisito)
     const vehicleHtml = utilities.buildVehicleHTML(vehicle)
 
     res.render("inventory/detail", {
@@ -76,7 +73,140 @@ invController.buildByInvId = async function (req, res, next) {
 }
 
 /* **************************************
- * Error intencional 500
+ * Task 1: Inventory Management view (GET)
+ * Route: /inv/
+ * ************************************** */
+invController.buildManagement = async function (req, res, next) {
+  try {
+    const nav = await utilities.getNav()
+    res.render("inventory/management", {
+      title: "Inventory Management",
+      nav,
+      errors: null,
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
+/* **************************************
+ * Task 2: Add Classification view (GET)
+ * ************************************** */
+invController.buildAddClassification = async function (req, res, next) {
+  try {
+    const nav = await utilities.getNav()
+    res.render("inventory/add-classification", {
+      title: "Add Classification",
+      nav,
+      errors: null,
+      classification_name: "",
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
+/* **************************************
+ * Task 2: Add Classification (POST)
+ * ************************************** */
+invController.addClassification = async function (req, res, next) {
+  try {
+    const { classification_name } = req.body
+    const result = await invModel.addClassification(classification_name)
+
+    if (result) {
+      req.flash("notice", "New classification added successfully.")
+      return res.redirect("/inv/") // ✅ CORRECTO
+    }
+
+    req.flash("notice", "Sorry, the classification could not be added.")
+    const nav = await utilities.getNav()
+    return res.status(501).render("inventory/add-classification", {
+      title: "Add Classification",
+      nav,
+      errors: null,
+      classification_name,
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
+/* **************************************
+ * Task 3: Add Inventory view (GET)
+ * ************************************** */
+invController.buildAddInventory = async function (req, res, next) {
+  try {
+    const nav = await utilities.getNav()
+    const classificationList = await utilities.buildClassificationList()
+
+    res.render("inventory/add-inventory", {
+      title: "Add Inventory",
+      nav,
+      classificationList,
+      errors: null,
+
+      // Sticky defaults
+      inv_make: "",
+      inv_model: "",
+      inv_year: "",
+      inv_description: "",
+      inv_image: "/images/vehicles/no-image.png",
+      inv_thumbnail: "/images/vehicles/no-image-tn.png",
+      inv_price: "",
+      inv_miles: "",
+      inv_color: "",
+      classification_id: "",
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
+/* **************************************
+ * Task 3: Add Inventory (POST)
+ * ************************************** */
+invController.addInventory = async function (req, res, next) {
+  try {
+    const data = req.body
+    const result = await invModel.addInventory(data)
+
+    if (result) {
+      req.flash("notice", "New inventory item added successfully.")
+      return res.redirect("/inv/")
+    }
+
+    req.flash("notice", "Sorry, the inventory item could not be added.")
+    const nav = await utilities.getNav()
+    const classificationList = await utilities.buildClassificationList(
+      data.classification_id
+    )
+
+    res.status(501).render("inventory/add-inventory", {
+      title: "Add Inventory",
+      nav,
+      classificationList,
+      errors: null,
+
+      // Sticky values
+      inv_make: data.inv_make,
+      inv_model: data.inv_model,
+      inv_year: data.inv_year,
+      inv_description: data.inv_description,
+      inv_image: data.inv_image,
+      inv_thumbnail: data.inv_thumbnail,
+      inv_price: data.inv_price,
+      inv_miles: data.inv_miles,
+      inv_color: data.inv_color,
+      classification_id: data.classification_id,
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
+/* **************************************
+ * Intentional 500 error route
  * ************************************** */
 invController.triggerError = async function (req, res, next) {
   throw new Error("Intentional Server Error!")

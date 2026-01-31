@@ -1,23 +1,20 @@
-// ==============================================
-// 🧭 Base Controller
-// Archivo: controllers/baseController.js
-// Función: Controlar las rutas principales (Home page)
-// ==============================================
-
-const utilities = require("../utilities/")
+const utilities = require("../utilities")
 
 const baseController = {}
 
-/* ***********************************************
- *  Renderizar la página principal (Home)
- * *********************************************** */
+/* ***************************
+ * Build Home view
+ * ************************** */
 baseController.buildHome = async function (req, res, next) {
-  const nav = await utilities.getNav()
-
-  res.render("index", {
-    title: "Home",
-    nav,
-  })
+  try {
+    const nav = await utilities.getNav()
+    res.render("index", {
+      title: "Home",
+      nav,
+    })
+  } catch (err) {
+    next(err)
+  }
 }
 
 module.exports = baseController
