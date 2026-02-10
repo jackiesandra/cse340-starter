@@ -1,63 +1,65 @@
 const express = require("express")
 const router = express.Router()
+
 const invController = require("../controllers/invController")
 const utilities = require("../utilities")
-
-// ✅ Validation middleware (A4)
 const invValidate = require("../utilities/inventory-validation")
 
 /* ***************************
- * Task 1: Management view
- * Route: /inv/
+ * Inventory Management (PROTEGIDO - Employee/Admin)
  * ************************** */
-router.get("/", utilities.handleErrors(invController.buildManagement))
+router.get(
+  "/",
+  utilities.checkLogin,
+  utilities.checkAdminEmployee,
+  utilities.handleErrors(invController.buildManagement)
+)
 
 /* ***************************
- * Task 2: Add Classification
+ * Add Classification (PROTEGIDO)
  * ************************** */
 router.get(
   "/add-classification",
+  utilities.checkLogin,
+  utilities.checkAdminEmployee,
   utilities.handleErrors(invController.buildAddClassification)
 )
 
 router.post(
   "/add-classification",
+  utilities.checkLogin,
+  utilities.checkAdminEmployee,
   invValidate.classificationRules(),
   invValidate.checkClassificationData,
   utilities.handleErrors(invController.addClassification)
 )
 
 /* ***************************
- * Task 3: Add Inventory
+ * Add Inventory (PROTEGIDO)
  * ************************** */
 router.get(
   "/add-inventory",
+  utilities.checkLogin,
+  utilities.checkAdminEmployee,
   utilities.handleErrors(invController.buildAddInventory)
 )
 
 router.post(
   "/add-inventory",
+  utilities.checkLogin,
+  utilities.checkAdminEmployee,
   invValidate.inventoryRules(),
   invValidate.checkInventoryData,
   utilities.handleErrors(invController.addInventory)
 )
 
 /* ***************************
- * Existing routes
+ * Public (NO proteger)
  * ************************** */
-router.get(
-  "/type/:classification_id",
-  utilities.handleErrors(invController.buildByClassificationId)
-)
+router.get("/type/:classification_id", utilities.handleErrors(invController.buildByClassificationId))
 
-router.get(
-  "/detail/:inv_id",
-  utilities.handleErrors(invController.buildByInvId)
-)
+router.get("/detail/:inv_id", utilities.handleErrors(invController.buildByInvId))
 
-router.get(
-  "/trigger-error",
-  utilities.handleErrors(invController.triggerError)
-)
+router.get("/trigger-error", utilities.handleErrors(invController.triggerError))
 
 module.exports = router

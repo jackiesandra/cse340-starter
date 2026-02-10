@@ -1,0 +1,58 @@
+<h1><%= title %></h1>
+
+<%- messages() %>
+
+<% if (errors && errors.length) { %>
+  <ul class="notice">
+    <% errors.forEach(e => { %>
+      <li><%= e.msg %></li>
+    <% }) %>
+  </ul>
+<% } %>
+
+<h2>Edit Account</h2>
+
+<form class="form" action="/account/update" method="post" novalidate>
+  <input type="hidden" name="account_id" value="<%= account_id %>">
+
+  <label for="first_name">First Name</label>
+  <input id="first_name" name="first_name" type="text" required value="<%= first_name || '' %>">
+
+  <label for="last_name">Last Name</label>
+  <input id="last_name" name="last_name" type="text" required value="<%= last_name || '' %>">
+
+  <label for="email">Email</label>
+  <input id="email" name="email" type="email" required value="<%= email || '' %>">
+
+  <button class="btn" type="submit">Update Account</button>
+</form>
+
+<hr>
+
+<h2>Update Password</h2>
+
+<p class="form-hint">
+  Passwords must be at least 12 characters and contain at least 1 number, 1 capital letter and 1 special character.
+  <br>
+  <strong>*Note: your original password will be changed.</strong>
+</p>
+
+<form class="form" action="/account/update-password" method="post" novalidate>
+  <input type="hidden" name="account_id" value="<%= account_id %>">
+
+  <label for="newPassword">New Password</label>
+  <input
+    id="newPassword"
+    name="account_password"
+    type="password"
+    required
+    pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{12,}"
+    title="Password must be at least 12 characters and include 1 number, 1 uppercase letter, and 1 special character."
+    autocomplete="new-password"
+  >
+
+  <button class="btn" type="button" id="toggleNewPassword">Show Password</button>
+  <button class="btn" type="submit">Change Password</button>
+</form>
+
+<script src="/js/account.js"></script>

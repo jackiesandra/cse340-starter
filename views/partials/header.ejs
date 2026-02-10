@@ -3,7 +3,16 @@
     <span class="brand__name">CSE Motors</span>
   </a>
 
-  <a class="tools__link" href="#" aria-label="My Account">My Account</a>
+  <div class="tools">
+    <% if (locals.loggedin) { %>
+      <a class="tools__link" href="/account/" aria-label="Account Management">
+        Welcome <%= locals.accountData.first_name %>
+      </a>
+      <a class="tools__link" href="/account/logout" aria-label="Logout">Logout</a>
+    <% } else { %>
+      <a class="tools__link" href="/account/login" aria-label="My Account">My Account</a>
+    <% } %>
+  </div>
 </header>
 
 <%- nav %>

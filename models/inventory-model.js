@@ -43,6 +43,7 @@ async function getVehicleById(inv_id) {
       i.inv_year,
       i.inv_miles,
       i.inv_color,
+      i.classification_id,
       c.classification_name
     FROM public.inventory AS i
     JOIN public.classification AS c
@@ -54,7 +55,7 @@ async function getVehicleById(inv_id) {
 }
 
 /* ***************************
- * Task 2: Add Classification
+ * Add Classification
  * ************************** */
 async function addClassification(classification_name) {
   try {
@@ -63,12 +64,13 @@ async function addClassification(classification_name) {
     const result = await pool.query(sql, [classification_name])
     return result.rows[0]
   } catch (error) {
+    console.error("addClassification error:", error.message)
     return null
   }
 }
 
 /* ***************************
- * Task 3: Add Inventory
+ * Add Inventory
  * ************************** */
 async function addInventory(data) {
   try {
@@ -94,6 +96,62 @@ async function addInventory(data) {
     const result = await pool.query(sql, params)
     return result.rows[0]
   } catch (error) {
+    console.error("addInventory error:", error.message)
+    return null
+  }
+}
+
+/* ***************************
+ * ✅ Update Inventory (A5 Edit)
+ * ************************** */
+async function updateInventory(data) {
+  try {
+    const sql = `
+      UPDATE public.inventory
+      SET inv_make = $1,
+          inv_model = $2,
+          inv_year = $3,
+          inv_description = $4,
+          inv_image = $5,
+          inv_thumbnail = $6,
+          inv_price = $7,
+          inv_miles = $8,
+          inv_color = $9,
+          classification_id = $10
+      WHERE inv_id = $11
+      RETURNING *
+    `
+    const params = [
+      data.inv_make,
+      data.inv_model,
+      data.inv_year,
+      data.inv_description,
+      data.inv_image,
+      data.inv_thumbnail,
+      data.inv_price,
+      data.inv_miles,
+      data.inv_color,
+      data.classification_id,
+      data.inv_id,
+    ]
+    const result = await pool.query(sql, params)
+    return result.rows[0] || null
+  } catch (error) {
+    console.error("updateInventory error:", error.message)
+    return null
+  }
+}
+
+/* ***************************
+ * ✅ Delete Inventory (A5 Delete)
+ * ************************** */
+async function deleteInventory(inv_id) {
+  try {
+    const sql = "DELETE FROM public.inventory WHERE inv_id = $1 RETURNING inv_id"
+    const result = await pool.query(sql, [inv_id])
+    return result.rows[0] || null
+  } catch (error) {
+    console.error("deleteInventory error:", error.message)
     return null
   }
 }
@@ -104,4 +162,6 @@ module.exports = {
   getVehicleById,
   addClassification,
   addInventory,
+  updateInventory,
+  deleteInventory,
 }

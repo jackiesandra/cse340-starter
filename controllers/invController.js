@@ -28,13 +28,13 @@ invController.buildByClassificationId = async function (req, res, next) {
     const grid = utilities.buildClassificationGrid(data)
     const className = data[0].classification_name
 
-    res.render("inventory/classification", {
+    return res.render("inventory/classification", {
       title: `${className} Vehicles`,
       nav,
       grid,
     })
   } catch (err) {
-    next(err)
+    return next(err)
   }
 }
 
@@ -51,7 +51,8 @@ invController.buildByInvId = async function (req, res, next) {
       return next(err)
     }
 
-    const vehicle = await invModel.getVehicleById(inv_id)
+    // ✅ IMPORTANTE: nombre correcto del modelo (starter suele usar getInventoryById)
+    const vehicle = await invModel.getInventoryById(inv_id)
 
     if (!vehicle) {
       const err = new Error("Sorry, we couldn't find that vehicle.")
@@ -62,13 +63,13 @@ invController.buildByInvId = async function (req, res, next) {
     const nav = await utilities.getNav()
     const vehicleHtml = utilities.buildVehicleHTML(vehicle)
 
-    res.render("inventory/detail", {
+    return res.render("inventory/detail", {
       title: `${vehicle.inv_make} ${vehicle.inv_model}`,
       nav,
       vehicleHtml,
     })
   } catch (err) {
-    next(err)
+    return next(err)
   }
 }
 
@@ -79,13 +80,13 @@ invController.buildByInvId = async function (req, res, next) {
 invController.buildManagement = async function (req, res, next) {
   try {
     const nav = await utilities.getNav()
-    res.render("inventory/management", {
+    return res.render("inventory/management", {
       title: "Inventory Management",
       nav,
       errors: null,
     })
   } catch (err) {
-    next(err)
+    return next(err)
   }
 }
 
@@ -95,14 +96,14 @@ invController.buildManagement = async function (req, res, next) {
 invController.buildAddClassification = async function (req, res, next) {
   try {
     const nav = await utilities.getNav()
-    res.render("inventory/add-classification", {
+    return res.render("inventory/add-classification", {
       title: "Add Classification",
       nav,
       errors: null,
       classification_name: "",
     })
   } catch (err) {
-    next(err)
+    return next(err)
   }
 }
 
@@ -116,19 +117,19 @@ invController.addClassification = async function (req, res, next) {
 
     if (result) {
       req.flash("notice", "New classification added successfully.")
-      return res.redirect("/inv/") // ✅ CORRECTO
+      return res.redirect("/inv/")
     }
 
     req.flash("notice", "Sorry, the classification could not be added.")
     const nav = await utilities.getNav()
-    return res.status(501).render("inventory/add-classification", {
+    return res.status(500).render("inventory/add-classification", {
       title: "Add Classification",
       nav,
       errors: null,
       classification_name,
     })
   } catch (err) {
-    next(err)
+    return next(err)
   }
 }
 
@@ -138,12 +139,14 @@ invController.addClassification = async function (req, res, next) {
 invController.buildAddInventory = async function (req, res, next) {
   try {
     const nav = await utilities.getNav()
-    const classificationList = await utilities.buildClassificationList()
 
-    res.render("inventory/add-inventory", {
+    // ✅ nombre consistente con el starter / validators (classificationSelect)
+    const classificationSelect = await utilities.buildClassificationList()
+
+    return res.render("inventory/add-inventory", {
       title: "Add Inventory",
       nav,
-      classificationList,
+      classificationSelect,
       errors: null,
 
       // Sticky defaults
@@ -159,7 +162,7 @@ invController.buildAddInventory = async function (req, res, next) {
       classification_id: "",
     })
   } catch (err) {
-    next(err)
+    return next(err)
   }
 }
 
@@ -178,14 +181,16 @@ invController.addInventory = async function (req, res, next) {
 
     req.flash("notice", "Sorry, the inventory item could not be added.")
     const nav = await utilities.getNav()
-    const classificationList = await utilities.buildClassificationList(
+
+    // ✅ sticky select
+    const classificationSelect = await utilities.buildClassificationList(
       data.classification_id
     )
 
-    res.status(501).render("inventory/add-inventory", {
+    return res.status(500).render("inventory/add-inventory", {
       title: "Add Inventory",
       nav,
-      classificationList,
+      classificationSelect,
       errors: null,
 
       // Sticky values
@@ -201,14 +206,14 @@ invController.addInventory = async function (req, res, next) {
       classification_id: data.classification_id,
     })
   } catch (err) {
-    next(err)
+    return next(err)
   }
 }
 
 /* **************************************
  * Intentional 500 error route
  * ************************************** */
-invController.triggerError = async function (req, res, next) {
+invController.triggerError = async function (req, res) {
   throw new Error("Intentional Server Error!")
 }
 

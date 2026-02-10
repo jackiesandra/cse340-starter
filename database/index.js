@@ -1,28 +1,35 @@
 // ==============================
 // 📦 Configuración de la base de datos PostgreSQL
 // ==============================
-
 require("dotenv").config()
 const { Pool } = require("pg")
 
-console.log("🌍 NODE_ENV:", process.env.NODE_ENV || "no definido")
-console.log("🔗 DATABASE_URL:", process.env.DATABASE_URL ? "definida ✅" : "❌ no definida")
+const connectionString = process.env.DATABASE_URL
 
-// Crear conexión al pool de PostgreSQL
+console.log("🌍 NODE_ENV:", process.env.NODE_ENV || "no definido")
+console.log("🔗 DATABASE_URL:", connectionString ? "definida ✅" : "❌ no definida")
+
+if (!connectionString) {
+  throw new Error(
+    "DATABASE_URL no está definida. Revisa tu archivo .env y que estés corriendo el server desde la raíz del proyecto."
+  )
+}
+
+// ✅ Render requiere SSL incluso desde local en muchos casos
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString,
   ssl: { rejectUnauthorized: false },
 })
 
-// 🔍 Probar conexión inicial
-pool.connect((err, client, release) => {
-  if (err) {
-    console.error("❌ Error al conectar a PostgreSQL:", err.stack)
-  } else {
+// 🔍 Probar conexión inicial (sin tumbar el server si falla)
+pool
+  .connect()
+  .then((client) => {
     console.log("✅ Conexión exitosa a PostgreSQL.")
-    release()
-  }
-})
+    client.release()
+  })
+  .catch((err) => {
+    console.error("❌ Error al conectar a PostgreSQL:", err.message)
+  })
 
-// Exportar el pool directamente
 module.exports = pool

@@ -450,3 +450,141 @@ footer a {
   font-size: 1rem;
   cursor: pointer;
 }
+/* ===============================
+   LOGIN PAGE (NO rompe el resto del sitio)
+   Aplica SOLO dentro de .login-page
+   =============================== */
+
+.login-page {
+  display: grid;
+  justify-items: center;
+  gap: 0.75rem;
+  padding: 2.5rem 1rem;
+}
+
+.login-page h1 {
+  width: min(520px, 100%);
+  margin: 0;
+  font-size: 2.6rem;
+  font-weight: 900;
+  color: #111;
+}
+
+/* Mensajes */
+.login-page .notice {
+  width: min(520px, 100%);
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  background: #fff3cd;
+  border: 1px solid #ffe69c;
+  color: #664d03;
+}
+
+/* Caja azul */
+.login-page form {
+  width: min(520px, 100%);
+  background: #1f93b4;
+  padding: 1.25rem 1.25rem 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Labels */
+.login-page form label {
+  display: block;
+  margin: 0.65rem 0 0.35rem;
+  font-weight: 800;
+  color: #0b2230;
+}
+
+/* Inputs */
+.login-page form input[type="email"],
+.login-page form input[type="password"],
+.login-page form input[type="text"] {
+  width: 100%;
+  height: 44px;
+  border: 2px solid rgba(255,255,255,0.6);
+  border-radius: 6px;
+  padding: 0.5rem 0.65rem;
+  font-size: 1rem;
+  outline: none;
+  background: #fff;
+}
+
+.login-page form input:focus {
+  border-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.25);
+}
+
+/* Texto de reglas */
+.login-page form p,
+.login-page form .password-help,
+.login-page form small {
+  color: #0b2230;
+  font-weight: 650;
+  margin: 0.75rem 0 0.25rem;
+  line-height: 1.35;
+}
+
+/* Botones */
+.login-page form .form-actions,
+.login-page form .actions,
+.login-page form .button-row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  margin-top: 0.9rem;
+}
+
+/* Default botones */
+.login-page form button,
+.login-page form input[type="submit"] {
+  border: 1px solid rgba(0,0,0,0.35);
+  background: #f5f5f5;
+  color: #111;
+  padding: 0.55rem 1rem;
+  border-radius: 8px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+/* Show Password estilo demo (negro redondo) */
+.login-page form button#showPassword,
+.login-page form button.show-password,
+.login-page form button[type="button"] {
+  background: #1c1c1c;
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 0.6rem 1.1rem;
+}
+
+.login-page form button:hover,
+.login-page form input[type="submit"]:hover {
+  filter: brightness(0.97);
+}
+
+/* SIGN-UP DENTRO DEL CUADRO */
+.login-page form .signup,
+.login-page form .no-account,
+.login-page form p.signup {
+  margin: 1rem 0 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0b2230;
+}
+
+.login-page form .signup a,
+.login-page form .no-account a {
+  color: #1a56db;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.login-page form .signup a:hover,
+.login-page form .no-account a:hover {
+  text-decoration: underline;
+}

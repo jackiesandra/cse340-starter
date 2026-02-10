@@ -1,14 +1,28 @@
-<h1>Inventory Management</h1>
+<h1><%= title %></h1>
 
 <%- messages() %>
 
-<p>Choose an option below to manage inventory tasks:</p>
-
-<ul>
-  <li>
+<section class="inventory-management">
+  <p>
     <a href="/inv/add-classification">Add New Classification</a>
-  </li>
-  <li>
+  </p>
+
+  <p>
     <a href="/inv/add-inventory">Add New Inventory Item</a>
-  </li>
-</ul>
+  </p>
+
+  <hr>
+
+  <h2>Manage Inventory</h2>
+
+  <p>
+    Select a classification to view inventory items.
+  </p>
+
+  <label for="classificationList">Classification</label>
+  <%- classificationList %>
+
+  <div id="inventoryDisplay"></div>
+</section>
+
+<script src="/js/inventory.js"></script>

@@ -1,27 +1,25 @@
 const invModel = require("../models/inventory-model")
+const jwt = require("jsonwebtoken")
+const bcrypt = require("bcryptjs")
 
 const Util = {}
 
-Util.formatPrice = (price) => {
-  if (price === null || price === undefined || Number.isNaN(Number(price)))
-    return "N/A"
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(price)
-}
+/* =========================
+ * Helpers
+ * ========================= */
+Util.handleErrors = (fn) => (req, res, next) =>
+  Promise.resolve(fn(req, res, next)).catch(next)
 
-Util.formatNumber = (num) => {
-  if (num === null || num === undefined || Number.isNaN(Number(num)))
-    return "N/A"
-  return new Intl.NumberFormat("en-US").format(num)
-}
+Util.hashPassword = (plainPassword) => bcrypt.hashSync(plainPassword, 10)
+Util.comparePassword = (plainPassword, hashedPassword) =>
+  bcrypt.compareSync(plainPassword, hashedPassword)
 
-Util.normalizePath = (p) => {
-  if (!p) return ""
-  return p.startsWith("/") ? p : `/${p}`
-}
+Util.signToken = (payload) =>
+  jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "1h" })
 
+/* =========================
+ * NAV
+ * ========================= */
 Util.getNav = async function () {
   const data = await invModel.getClassifications()
 
@@ -34,7 +32,7 @@ Util.getNav = async function () {
   data.forEach((row) => {
     nav += `
       <li>
-        <a class="nav-link" href="/inv/type/${row.classification_id}" 
+        <a class="nav-link" href="/inv/type/${row.classification_id}"
            title="View our ${row.classification_name} vehicles">
           ${row.classification_name}
         </a>
@@ -49,58 +47,31 @@ Util.getNav = async function () {
   return nav
 }
 
-/* ***************************
- * ✅ Build Classification Select List (Task 3)
- * ************************** */
-Util.buildClassificationList = async function (classification_id = null) {
-  const data = await invModel.getClassifications()
-
-  let classificationList =
-    '<select name="classification_id" id="classificationList" required>'
-  classificationList += "<option value=''>Choose a Classification</option>"
-
-  data.forEach((row) => {
-    classificationList += `<option value="${row.classification_id}"`
-    if (
-      classification_id != null &&
-      Number(row.classification_id) === Number(classification_id)
-    ) {
-      classificationList += " selected"
-    }
-    classificationList += `>${row.classification_name}</option>`
-  })
-
-  classificationList += "</select>"
-  return classificationList
-}
-
+/* =========================
+ * ✅ Build Inventory Grid HTML
+ * IMPORTANT: NOT async (so it doesn't return a Promise)
+ * ========================= */
 Util.buildClassificationGrid = function (data) {
   if (!data || data.length === 0) {
-    return "<p class='notice'>Sorry, no matching vehicles could be found.</p>"
+    return '<p class="notice">Sorry, no matching vehicles could be found.</p>'
   }
 
   let grid = '<ul id="inv-display">'
 
   data.forEach((vehicle) => {
-    const name = `${vehicle.inv_make} ${vehicle.inv_model}`
-    const id = Number(vehicle.inv_id)
-
-    const detailLink = Number.isInteger(id) && id > 0 ? `/inv/detail/${id}` : "#"
-    const thumb = Util.normalizePath(vehicle.inv_thumbnail)
-
     grid += `
       <li>
-        <a href="${detailLink}" title="View ${name} details">
-          <img src="${thumb}" alt="Image of ${name}">
+        <a href="/inv/detail/${vehicle.inv_id}" title="View ${vehicle.inv_make} ${vehicle.inv_model} details">
+          <img src="${vehicle.inv_thumbnail}" alt="Image of ${vehicle.inv_make} ${vehicle.inv_model}">
         </a>
         <div class="namePrice">
           <hr>
           <h2>
-            <a href="${detailLink}" title="View ${name} details">
-              ${name}
+            <a href="/inv/detail/${vehicle.inv_id}" title="View ${vehicle.inv_make} ${vehicle.inv_model} details">
+              ${vehicle.inv_make} ${vehicle.inv_model}
             </a>
           </h2>
-          <span>${Util.formatPrice(vehicle.inv_price)}</span>
+          <span>$${new Intl.NumberFormat("en-US").format(vehicle.inv_price)}</span>
         </div>
       </li>
     `
@@ -110,39 +81,57 @@ Util.buildClassificationGrid = function (data) {
   return grid
 }
 
-Util.buildVehicleHTML = function (vehicle) {
-  const name = `${vehicle.inv_make} ${vehicle.inv_model}`
-  const year = vehicle.inv_year ?? "N/A"
-  const miles = vehicle.inv_miles ?? null
-  const color = vehicle.inv_color ?? "N/A"
-  const image = Util.normalizePath(vehicle.inv_image)
+/* =========================
+ * ✅ GLOBAL JWT LOCALS
+ * Sets: res.locals.loggedin + res.locals.accountData
+ * ========================= */
+Util.checkJWTToken = (req, res, next) => {
+  const token = req.cookies?.jwt
 
-  return `
-    <section class="vehicle-detail">
-      <div class="vehicle-detail__image">
-        <img src="${image}" alt="Image of ${name}">
-      </div>
+  // Minimal logging only in development
+  if (process.env.NODE_ENV !== "production") {
+    console.log("JWT check:", req.path, token ? "cookie exists" : "no cookie")
+  }
 
-      <div class="vehicle-detail__content">
-        <h2>${name}</h2>
+  if (!token) {
+    res.locals.loggedin = false
+    res.locals.accountData = null
+    return next()
+  }
 
-        <p class="vehicle-detail__price">${Util.formatPrice(vehicle.inv_price)}</p>
-        <div class="vehicle-detail__meta">
-          <p><strong>Year:</strong> ${year}</p>
-          <p><strong>Mileage:</strong> ${
-            miles === null ? "N/A" : Util.formatNumber(miles) + " miles"
-          }</p>
-          <p><strong>Color:</strong> ${color}</p>
-        </div>
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, accountData) => {
+    if (err) {
+      res.clearCookie("jwt")
+      res.locals.loggedin = false
+      res.locals.accountData = null
+      return next()
+    }
 
-        <h3>Description</h3>
-        <p>${vehicle.inv_description ?? ""}</p>
-      </div>
-    </section>
-  `
+    res.locals.loggedin = true
+    res.locals.accountData = accountData
+    return next()
+  })
 }
 
-Util.handleErrors = (fn) => (req, res, next) =>
-  Promise.resolve(fn(req, res, next)).catch(next)
+/* =========================
+ * ✅ Must be logged in
+ * ========================= */
+Util.checkLogin = (req, res, next) => {
+  if (res.locals.loggedin) return next()
+  req.flash("notice", "Please log in.")
+  return res.redirect("/account/login")
+}
+
+/* =========================
+ * ✅ Employee/Admin only
+ * ========================= */
+Util.checkAdminEmployee = (req, res, next) => {
+  const acct = res.locals.accountData
+  if (acct && (acct.account_type === "Employee" || acct.account_type === "Admin")) {
+    return next()
+  }
+  req.flash("notice", "You must be logged in as an Employee or Admin.")
+  return res.redirect("/account/login")
+}
 
 module.exports = Util

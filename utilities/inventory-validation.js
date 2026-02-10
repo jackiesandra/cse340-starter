@@ -4,7 +4,7 @@ const utilities = require("./index")
 const invValidate = {}
 
 /* *******************************
- * Task 2: Add Classification rules
+ * Add Classification rules
  * ******************************* */
 invValidate.classificationRules = () => {
   return [
@@ -22,11 +22,12 @@ invValidate.checkClassificationData = async (req, res, next) => {
   const { classification_name } = req.body
 
   if (!errors.isEmpty()) {
-    let nav = await utilities.getNav()
+    const nav = await utilities.getNav()
     return res.render("inventory/add-classification", {
       title: "Add Classification",
       nav,
-      errors: errors.array(),
+      // ✅ pass the validationResult so views can use errors.array()
+      errors,
       classification_name,
     })
   }
@@ -34,13 +35,15 @@ invValidate.checkClassificationData = async (req, res, next) => {
 }
 
 /* *******************************
- * Task 3: Add Inventory rules
+ * Add Inventory rules
  * ******************************* */
 invValidate.inventoryRules = () => {
   return [
     body("classification_id")
       .notEmpty()
-      .withMessage("Please choose a classification."),
+      .withMessage("Please choose a classification.")
+      .isInt()
+      .withMessage("Invalid classification."),
 
     body("inv_make").trim().notEmpty().withMessage("Make is required."),
     body("inv_model").trim().notEmpty().withMessage("Model is required."),
@@ -50,20 +53,9 @@ invValidate.inventoryRules = () => {
       .isInt({ min: 1886, max: 2100 })
       .withMessage("Year must be a valid number."),
 
-    body("inv_description")
-      .trim()
-      .notEmpty()
-      .withMessage("Description is required."),
-
-    body("inv_image")
-      .trim()
-      .notEmpty()
-      .withMessage("Image path is required."),
-
-    body("inv_thumbnail")
-      .trim()
-      .notEmpty()
-      .withMessage("Thumbnail path is required."),
+    body("inv_description").trim().notEmpty().withMessage("Description is required."),
+    body("inv_image").trim().notEmpty().withMessage("Image path is required."),
+    body("inv_thumbnail").trim().notEmpty().withMessage("Thumbnail path is required."),
 
     body("inv_price")
       .trim()
@@ -75,10 +67,7 @@ invValidate.inventoryRules = () => {
       .isInt({ min: 0 })
       .withMessage("Miles must be a whole number."),
 
-    body("inv_color")
-      .trim()
-      .notEmpty()
-      .withMessage("Color is required."),
+    body("inv_color").trim().notEmpty().withMessage("Color is required."),
   ]
 }
 
@@ -99,18 +88,17 @@ invValidate.checkInventoryData = async (req, res, next) => {
   } = req.body
 
   if (!errors.isEmpty()) {
-    let nav = await utilities.getNav()
-
-    // ✅ sticky select list
-    let classificationSelect = await utilities.buildClassificationList(classification_id)
+    const nav = await utilities.getNav()
+    const classificationSelect = await utilities.buildClassificationList(classification_id)
 
     return res.render("inventory/add-inventory", {
       title: "Add Inventory",
       nav,
       classificationSelect,
-      errors: errors.array(),
+      // ✅ same pattern as above
+      errors,
 
-      // ✅ sticky inputs
+      // sticky fields
       classification_id,
       inv_make,
       inv_model,
@@ -123,6 +111,7 @@ invValidate.checkInventoryData = async (req, res, next) => {
       inv_color,
     })
   }
+
   next()
 }
 
