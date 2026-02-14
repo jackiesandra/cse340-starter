@@ -18,6 +18,28 @@ Util.signToken = (payload) =>
   jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "1h" })
 
 /* =========================
+ * ✅ Flash Messages Helper (FIXED)
+ * Use in EJS: <%- messages() %>
+ * - No <li> wrappers
+ * - Clean HTML output
+ * ========================= */
+Util.messages = (req, res, next) => {
+  res.locals.messages = () => {
+    const notices = req.flash("notice")
+
+    if (!notices || notices.length === 0) return ""
+
+    // Build clean blocks (no UL/LI)
+    const html = notices
+      .map((msg) => `<div class="notice">${msg}</div>`)
+      .join("")
+
+    return html
+  }
+  next()
+}
+
+/* =========================
  * NAV
  * ========================= */
 Util.getNav = async function () {
@@ -49,7 +71,7 @@ Util.getNav = async function () {
 
 /* =========================
  * ✅ Build Inventory Grid HTML
- * IMPORTANT: NOT async (so it doesn't return a Promise)
+ * IMPORTANT: NOT async
  * ========================= */
 Util.buildClassificationGrid = function (data) {
   if (!data || data.length === 0) {
@@ -82,13 +104,41 @@ Util.buildClassificationGrid = function (data) {
 }
 
 /* =========================
+ * ✅ Build Vehicle Detail HTML
+ * Used in inventory/detail.ejs as: <%- vehicleHtml %>
+ * ========================= */
+Util.buildVehicleHTML = function (vehicle) {
+  if (!vehicle) {
+    return '<p class="notice">Vehicle details not found.</p>'
+  }
+
+  const price = new Intl.NumberFormat("en-US").format(vehicle.inv_price)
+  const miles = new Intl.NumberFormat("en-US").format(vehicle.inv_miles)
+
+  return `
+    <section class="vehicle-detail">
+      <div class="vehicle-detail__image">
+        <img src="${vehicle.inv_image}" alt="Image of ${vehicle.inv_make} ${vehicle.inv_model}">
+      </div>
+
+      <div class="vehicle-detail__info">
+        <h2>${vehicle.inv_year} ${vehicle.inv_make} ${vehicle.inv_model}</h2>
+        <p><strong>Price:</strong> $${price}</p>
+        <p><strong>Miles:</strong> ${miles}</p>
+        <p><strong>Color:</strong> ${vehicle.inv_color}</p>
+        <p><strong>Description:</strong> ${vehicle.inv_description}</p>
+      </div>
+    </section>
+  `
+}
+
+/* =========================
  * ✅ GLOBAL JWT LOCALS
  * Sets: res.locals.loggedin + res.locals.accountData
  * ========================= */
 Util.checkJWTToken = (req, res, next) => {
   const token = req.cookies?.jwt
 
-  // Minimal logging only in development
   if (process.env.NODE_ENV !== "production") {
     console.log("JWT check:", req.path, token ? "cookie exists" : "no cookie")
   }

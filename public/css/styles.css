@@ -48,6 +48,41 @@ a:focus {
 }
 
 /* =========================
+   ✅ FLASH MESSAGES (express-messages FIX)
+   - Removes bullets
+   - Makes it look like your site
+   ========================= */
+ul.messages {
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 0 0 1rem 0 !important;
+}
+
+ul.messages li {
+  list-style: none !important;
+  margin: 0 0 0.75rem 0 !important;
+  padding: 0.9rem 1rem !important;
+  border: 1px solid #cfe9d9;
+  background: #eefaf2;
+  color: #1f5f3a;
+  border-radius: 8px;
+  font-weight: 700;
+}
+
+/* If messages inserts markers */
+ul.messages li::marker {
+  content: "" !important;
+}
+
+/* If you also flash "error" sometimes */
+ul.messages li.error,
+ul.messages li.notice.error {
+  border-color: #f5b5b5;
+  background: #fff0f0;
+  color: #8b1e1e;
+}
+
+/* =========================
    Header
    ========================= */
 .site-header {
@@ -84,7 +119,7 @@ a:focus {
 }
 
 /* =========================
-   Navigation (barra tipo mock)
+   Navigation
    ========================= */
 nav {
   background: #0f172a;
@@ -144,8 +179,7 @@ p {
 }
 
 /* =========================
-   HOME - Match mock layout
-   (para index.ejs con hero__wrap, hero__img, hero__info)
+   HOME
    ========================= */
 .hero {
   background: #fff;
@@ -323,7 +357,7 @@ p {
   border-radius: 12px;
 }
 
-.vehicle-detail__content {
+.vehicle-detail__info {
   background: #fff;
   border-radius: 16px;
   padding: 1rem;
@@ -340,13 +374,303 @@ p {
   margin: 0;
 }
 
-.vehicle-detail__meta strong {
-  color: #111;
-}
-
 .vehicle-detail__price {
   font-size: 1.35rem;
   font-weight: 900;
+}
+
+/* =========================
+   Inventory forms
+   ========================= */
+.inventory-form {
+  max-width: 900px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group--full {
+  grid-column: 1 / -1;
+}
+
+.inventory-form input,
+.inventory-form textarea {
+  padding: 0.5rem;
+  font-size: 1rem;
+}
+
+.inventory-form textarea {
+  min-height: 120px;
+}
+
+.inventory-form button {
+  padding: 0.7rem 1.2rem;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+/* ===============================
+   LOGIN PAGE
+   =============================== */
+.login-page {
+  display: grid;
+  justify-items: center;
+  gap: 0.75rem;
+  padding: 2.5rem 1rem;
+}
+
+.login-page h1 {
+  width: min(520px, 100%);
+  margin: 0;
+  font-size: 2.6rem;
+  font-weight: 900;
+  color: #111;
+}
+
+/* Caja azul */
+.login-page form {
+  width: min(520px, 100%);
+  background: #1f93b4;
+  padding: 1.25rem 1.25rem 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Labels */
+.login-page form label {
+  display: block;
+  margin: 0.65rem 0 0.35rem;
+  font-weight: 800;
+  color: #0b2230;
+}
+
+/* Inputs */
+.login-page form input[type="email"],
+.login-page form input[type="password"],
+.login-page form input[type="text"] {
+  width: 100%;
+  height: 44px;
+  border: 2px solid rgba(255,255,255,0.6);
+  border-radius: 6px;
+  padding: 0.5rem 0.65rem;
+  font-size: 1rem;
+  outline: none;
+  background: #fff;
+}
+
+.login-page form input:focus {
+  border-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.25);
+}
+
+/* Texto */
+.login-page form p,
+.login-page form small {
+  color: #0b2230;
+  font-weight: 650;
+  margin: 0.75rem 0 0.25rem;
+  line-height: 1.35;
+}
+
+/* Botones */
+.login-page form .form-actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  margin-top: 0.9rem;
+}
+
+.login-page form button,
+.login-page form input[type="submit"] {
+  border: 1px solid rgba(0,0,0,0.35);
+  background: #f5f5f5;
+  color: #111;
+  padding: 0.55rem 1rem;
+  border-radius: 8px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+/* Show Password */
+.login-page form button#showPassword,
+.login-page form button[type="button"] {
+  background: #1c1c1c;
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 0.6rem 1.1rem;
+}
+
+/* Links signup */
+.login-page form .signup a,
+.login-page form .no-account a {
+  color: #1a56db;
+  font-weight: 900;
+  text-decoration: none;
+}
+.login-page form .signup a:hover,
+.login-page form .no-account a:hover {
+  text-decoration: underline;
+}
+
+/* =========================
+   Reviews
+   ========================= */
+.reviews-section,
+.add-review-section {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
+}
+
+.review-summary {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.stars {
+  display: inline-flex;
+  gap: 0.15rem;
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.star {
+  user-select: none;
+}
+
+.star.empty {
+  opacity: 0.25;
+}
+
+.review-list {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0 0;
+}
+
+.review-item {
+  padding: 1rem 0;
+  border-top: 1px solid #eee;
+}
+
+.review-item:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.review-meta {
+  display: flex;
+  gap: 0.5rem;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+
+.review-date {
+  font-size: 0.9rem;
+  opacity: 0.75;
+}
+
+/* Form styles */
+.add-review-section form {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.add-review-section input[type="number"],
+.add-review-section input[type="text"],
+.add-review-section textarea {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.add-review-section textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.add-review-section button {
+  padding: 0.7rem 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* ===============================
+   Favorites
+   =============================== */
+.favorites-section {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #e1e1e1;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
+}
+
+.favorites-section form {
+  margin-bottom: 0.5rem;
+}
+
+.favorites-section button {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  font-weight: 700;
+}
+
+.favorites-section form[action*="add"] button {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.favorites-section form[action*="add"] button:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+}
+
+.favorites-section form[action*="remove"] button {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.favorites-section form[action*="remove"] button:hover {
+  background-color: #a71d2a;
+  transform: translateY(-2px);
+}
+
+.favorites-section a {
+  display: inline-block;
+  margin-top: 0.5rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: #333;
+}
+
+.favorites-section a:hover {
+  text-decoration: underline;
 }
 
 /* =========================
@@ -414,177 +738,4 @@ footer a {
     justify-content: space-between;
     align-items: center;
   }
-}
-.inventory-form {
-  max-width: 900px;
-}
-
-.form-row {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-}
-
-.form-group--full {
-  grid-column: 1 / -1;
-}
-
-.inventory-form input,
-.inventory-form textarea {
-  padding: 0.5rem;
-  font-size: 1rem;
-}
-
-.inventory-form textarea {
-  min-height: 120px;
-}
-
-.inventory-form button {
-  padding: 0.7rem 1.2rem;
-  font-size: 1rem;
-  cursor: pointer;
-}
-/* ===============================
-   LOGIN PAGE (NO rompe el resto del sitio)
-   Aplica SOLO dentro de .login-page
-   =============================== */
-
-.login-page {
-  display: grid;
-  justify-items: center;
-  gap: 0.75rem;
-  padding: 2.5rem 1rem;
-}
-
-.login-page h1 {
-  width: min(520px, 100%);
-  margin: 0;
-  font-size: 2.6rem;
-  font-weight: 900;
-  color: #111;
-}
-
-/* Mensajes */
-.login-page .notice {
-  width: min(520px, 100%);
-  margin: 0;
-  padding: 0.75rem 1rem;
-  border-radius: 6px;
-  background: #fff3cd;
-  border: 1px solid #ffe69c;
-  color: #664d03;
-}
-
-/* Caja azul */
-.login-page form {
-  width: min(520px, 100%);
-  background: #1f93b4;
-  padding: 1.25rem 1.25rem 1.5rem;
-  border-radius: 8px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
-  display: flex;
-  flex-direction: column;
-}
-
-/* Labels */
-.login-page form label {
-  display: block;
-  margin: 0.65rem 0 0.35rem;
-  font-weight: 800;
-  color: #0b2230;
-}
-
-/* Inputs */
-.login-page form input[type="email"],
-.login-page form input[type="password"],
-.login-page form input[type="text"] {
-  width: 100%;
-  height: 44px;
-  border: 2px solid rgba(255,255,255,0.6);
-  border-radius: 6px;
-  padding: 0.5rem 0.65rem;
-  font-size: 1rem;
-  outline: none;
-  background: #fff;
-}
-
-.login-page form input:focus {
-  border-color: #ffffff;
-  box-shadow: 0 0 0 3px rgba(255,255,255,0.25);
-}
-
-/* Texto de reglas */
-.login-page form p,
-.login-page form .password-help,
-.login-page form small {
-  color: #0b2230;
-  font-weight: 650;
-  margin: 0.75rem 0 0.25rem;
-  line-height: 1.35;
-}
-
-/* Botones */
-.login-page form .form-actions,
-.login-page form .actions,
-.login-page form .button-row {
-  display: flex;
-  gap: 0.75rem;
-  align-items: center;
-  margin-top: 0.9rem;
-}
-
-/* Default botones */
-.login-page form button,
-.login-page form input[type="submit"] {
-  border: 1px solid rgba(0,0,0,0.35);
-  background: #f5f5f5;
-  color: #111;
-  padding: 0.55rem 1rem;
-  border-radius: 8px;
-  font-weight: 800;
-  cursor: pointer;
-}
-
-/* Show Password estilo demo (negro redondo) */
-.login-page form button#showPassword,
-.login-page form button.show-password,
-.login-page form button[type="button"] {
-  background: #1c1c1c;
-  color: #fff;
-  border: none;
-  border-radius: 999px;
-  padding: 0.6rem 1.1rem;
-}
-
-.login-page form button:hover,
-.login-page form input[type="submit"]:hover {
-  filter: brightness(0.97);
-}
-
-/* SIGN-UP DENTRO DEL CUADRO */
-.login-page form .signup,
-.login-page form .no-account,
-.login-page form p.signup {
-  margin: 1rem 0 0;
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: #0b2230;
-}
-
-.login-page form .signup a,
-.login-page form .no-account a {
-  color: #1a56db;
-  font-weight: 900;
-  text-decoration: none;
-}
-
-.login-page form .signup a:hover,
-.login-page form .no-account a:hover {
-  text-decoration: underline;
 }

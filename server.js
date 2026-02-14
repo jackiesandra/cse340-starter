@@ -17,6 +17,8 @@ const pool = require("./database")
 const baseController = require("./controllers/baseController")
 const invRoute = require("./routes/inventoryRoute")
 const accountRoute = require("./routes/accountRoute")
+const reviewRoute = require("./routes/reviewRoute") // ✅ NEW
+const favoriteRoute = require("./routes/favoriteRoute") // ✅ NEW
 
 // Utilities
 const utilities = require("./utilities")
@@ -92,7 +94,10 @@ app.use(express.static(path.join(__dirname, "public")))
 const PORT = process.env.PORT || 3000
 if (process.env.NODE_ENV !== "production") {
   console.log("🌍 NODE_ENV:", process.env.NODE_ENV || "undefined")
-  console.log("🔗 DATABASE_URL:", process.env.DATABASE_URL ? "definida ✅" : "❌ undefined")
+  console.log(
+    "🔗 DATABASE_URL:",
+    process.env.DATABASE_URL ? "definida ✅" : "❌ undefined"
+  )
 }
 
 // ==============================================
@@ -102,6 +107,8 @@ app.get("/", utilities.handleErrors(baseController.buildHome))
 
 app.use("/inv", invRoute)
 app.use("/account", accountRoute)
+app.use("/review", reviewRoute) // ✅ NEW (antes del 404)
+app.use("/favorites", favoriteRoute) // ✅ NEW (antes del 404)
 
 // ==============================================
 // ⚠️ 404

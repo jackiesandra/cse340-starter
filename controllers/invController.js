@@ -1,4 +1,6 @@
 const invModel = require("../models/inventory-model")
+const reviewModel = require("../models/review-model")
+const favoriteModel = require("../models/favorite-model")
 const utilities = require("../utilities")
 
 const invController = {}
@@ -51,8 +53,8 @@ invController.buildByInvId = async function (req, res, next) {
       return next(err)
     }
 
-    // ✅ IMPORTANTE: nombre correcto del modelo (starter suele usar getInventoryById)
-    const vehicle = await invModel.getInventoryById(inv_id)
+    // ✅ Tu modelo se llama getVehicleById
+    const vehicle = await invModel.getVehicleById(inv_id)
 
     if (!vehicle) {
       const err = new Error("Sorry, we couldn't find that vehicle.")
@@ -61,12 +63,31 @@ invController.buildByInvId = async function (req, res, next) {
     }
 
     const nav = await utilities.getNav()
+
+    // ✅ CORRECTO: tu utilities tiene buildVehicleHTML
     const vehicleHtml = utilities.buildVehicleHTML(vehicle)
+
+    // Reviews
+    const reviews = await reviewModel.getReviewsByInvId(inv_id)
+    const reviewSummary = await reviewModel.getReviewSummary(inv_id)
+
+    // Favorites
+    let favorite = false
+    if (res.locals.loggedin && res.locals.accountData?.account_id) {
+      favorite = await favoriteModel.isFavorite(
+        res.locals.accountData.account_id,
+        inv_id
+      )
+    }
 
     return res.render("inventory/detail", {
       title: `${vehicle.inv_make} ${vehicle.inv_model}`,
       nav,
       vehicleHtml,
+      inv_id,
+      reviews,
+      reviewSummary,
+      favorite,
     })
   } catch (err) {
     return next(err)
@@ -74,8 +95,7 @@ invController.buildByInvId = async function (req, res, next) {
 }
 
 /* **************************************
- * Task 1: Inventory Management view (GET)
- * Route: /inv/
+ * Inventory Management view
  * ************************************** */
 invController.buildManagement = async function (req, res, next) {
   try {
@@ -91,7 +111,7 @@ invController.buildManagement = async function (req, res, next) {
 }
 
 /* **************************************
- * Task 2: Add Classification view (GET)
+ * Add Classification view
  * ************************************** */
 invController.buildAddClassification = async function (req, res, next) {
   try {
@@ -108,7 +128,7 @@ invController.buildAddClassification = async function (req, res, next) {
 }
 
 /* **************************************
- * Task 2: Add Classification (POST)
+ * Add Classification (POST)
  * ************************************** */
 invController.addClassification = async function (req, res, next) {
   try {
@@ -134,13 +154,11 @@ invController.addClassification = async function (req, res, next) {
 }
 
 /* **************************************
- * Task 3: Add Inventory view (GET)
+ * Add Inventory view
  * ************************************** */
 invController.buildAddInventory = async function (req, res, next) {
   try {
     const nav = await utilities.getNav()
-
-    // ✅ nombre consistente con el starter / validators (classificationSelect)
     const classificationSelect = await utilities.buildClassificationList()
 
     return res.render("inventory/add-inventory", {
@@ -148,8 +166,6 @@ invController.buildAddInventory = async function (req, res, next) {
       nav,
       classificationSelect,
       errors: null,
-
-      // Sticky defaults
       inv_make: "",
       inv_model: "",
       inv_year: "",
@@ -167,7 +183,7 @@ invController.buildAddInventory = async function (req, res, next) {
 }
 
 /* **************************************
- * Task 3: Add Inventory (POST)
+ * Add Inventory (POST)
  * ************************************** */
 invController.addInventory = async function (req, res, next) {
   try {
@@ -181,8 +197,6 @@ invController.addInventory = async function (req, res, next) {
 
     req.flash("notice", "Sorry, the inventory item could not be added.")
     const nav = await utilities.getNav()
-
-    // ✅ sticky select
     const classificationSelect = await utilities.buildClassificationList(
       data.classification_id
     )
@@ -192,8 +206,6 @@ invController.addInventory = async function (req, res, next) {
       nav,
       classificationSelect,
       errors: null,
-
-      // Sticky values
       inv_make: data.inv_make,
       inv_model: data.inv_model,
       inv_year: data.inv_year,
@@ -211,7 +223,7 @@ invController.addInventory = async function (req, res, next) {
 }
 
 /* **************************************
- * Intentional 500 error route
+ * Intentional 500 Error
  * ************************************** */
 invController.triggerError = async function (req, res) {
   throw new Error("Intentional Server Error!")

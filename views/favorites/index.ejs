@@ -1,0 +1,23 @@
+<h1><%= title %></h1>
+<%- messages() %>
+
+<% if (!favorites || favorites.length === 0) { %>
+  <p>You have no favorites yet.</p>
+<% } else { %>
+  <ul class="inv-display">
+    <% favorites.forEach(v => { %>
+      <li>
+        <a href="/inv/detail/<%= v.inv_id %>">
+          <img
+            src="<%= v.inv_thumbnail %>"
+            alt="<%= v.inv_make %> <%= v.inv_model %> thumbnail"
+            loading="lazy"
+          >
+          <h2><%= v.inv_year %> <%= v.inv_make %> <%= v.inv_model %></h2>
+        </a>
+        <p><strong>Class:</strong> <%= v.classification_name %></p>
+        <p><strong>Price:</strong> $<%= Number(v.inv_price).toLocaleString("en-US") %></p>
+      </li>
+    <% }) %>
+  </ul>
+<% } %>
