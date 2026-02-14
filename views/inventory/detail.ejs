@@ -2,20 +2,24 @@
 
 <%- vehicleHtml %>
 
+<%- messages() %>
+
 <section class="favorites-section">
   <% if (locals.loggedin) { %>
 
-    <% if (!favorite) { %>
-      <form method="post" action="/favorites/add/<%= inv_id %>">
-        <button type="submit">Add to Favorites</button>
-      </form>
-    <% } else { %>
-      <form method="post" action="/favorites/remove/<%= inv_id %>">
-        <button type="submit">Remove from Favorites</button>
-      </form>
-    <% } %>
+    <div class="fav-actions">
+      <% if (!favorite) { %>
+        <form method="post" action="/favorites/add/<%= inv_id %>">
+          <button type="submit" class="btn-primary">Add to Favorites</button>
+        </form>
+      <% } else { %>
+        <form method="post" action="/favorites/remove/<%= inv_id %>">
+          <button type="submit" class="btn-danger">Remove from Favorites</button>
+        </form>
+      <% } %>
 
-    <p><a href="/favorites">View My Favorites</a></p>
+      <a class="btn-secondary" href="/favorites">View My Favorites</a>
+    </div>
 
   <% } else { %>
     <p><a href="/account/login">Log in</a> to save this vehicle to favorites.</p>
@@ -25,9 +29,11 @@
 <section class="reviews-section">
   <h2>Vehicle Reviews</h2>
 
-  <% 
+  <%
     function renderStars(value) {
-      const rating = Math.round(Number(value) || 0)
+      const raw = Number(value) || 0
+      const rating = Math.min(5, Math.max(0, Math.round(raw)))
+
       let html = '<span class="stars" aria-label="Rating ' + rating + ' out of 5">'
       for (let i = 1; i <= 5; i++) {
         html += (i <= rating)
@@ -39,9 +45,9 @@
     }
   %>
 
-  <% if (reviewSummary && reviewSummary.count > 0) { %>
+  <% if (reviewSummary && Number(reviewSummary.count) > 0) { %>
     <div class="review-summary">
-      <div><strong>Average Rating:</strong> <%= reviewSummary.avg %> / 5</div>
+      <div><strong>Average Rating:</strong> <%= Number(reviewSummary.avg).toFixed(1) %> / 5</div>
       <div><%- renderStars(reviewSummary.avg) %></div>
       <div>(<%= reviewSummary.count %> review(s))</div>
     </div>
@@ -77,8 +83,6 @@
 
 <section class="add-review-section">
   <h3>Leave a Review</h3>
-
-  <%- messages() %>
 
   <% if (locals.loggedin) { %>
     <form method="post" action="/review/add/<%= inv_id %>">

@@ -1,23 +1,34 @@
 <h1><%= title %></h1>
-<%- messages() %>
 
 <% if (!favorites || favorites.length === 0) { %>
-  <p>You have no favorites yet.</p>
+  <p>You don't have favorites yet.</p>
 <% } else { %>
-  <ul class="inv-display">
+  <section class="favorites-grid">
     <% favorites.forEach(v => { %>
-      <li>
-        <a href="/inv/detail/<%= v.inv_id %>">
-          <img
-            src="<%= v.inv_thumbnail %>"
-            alt="<%= v.inv_make %> <%= v.inv_model %> thumbnail"
-            loading="lazy"
-          >
-          <h2><%= v.inv_year %> <%= v.inv_make %> <%= v.inv_model %></h2>
+      <article class="fav-card">
+        <a class="fav-thumb" href="/inv/detail/<%= v.inv_id %>">
+          <img src="<%= v.inv_thumbnail %>" alt="<%= v.inv_make %> <%= v.inv_model %>">
         </a>
-        <p><strong>Class:</strong> <%= v.classification_name %></p>
-        <p><strong>Price:</strong> $<%= Number(v.inv_price).toLocaleString("en-US") %></p>
-      </li>
+
+        <div class="fav-info">
+          <h2 class="fav-title">
+            <a href="/inv/detail/<%= v.inv_id %>">
+              <%= v.inv_year %> <%= v.inv_make %> <%= v.inv_model %>
+            </a>
+          </h2>
+
+          <p class="fav-meta"><strong>Class:</strong> <%= v.classification_name || "" %></p>
+          <p class="fav-price"><strong>Price:</strong> $<%= new Intl.NumberFormat("en-US").format(v.inv_price) %></p>
+
+          <div class="fav-actions">
+            <a class="btn-secondary" href="/inv/detail/<%= v.inv_id %>">View details</a>
+
+            <form action="/favorites/remove/<%= v.inv_id %>" method="post">
+              <button class="btn-danger" type="submit">Remove</button>
+            </form>
+          </div>
+        </div>
+      </article>
     <% }) %>
-  </ul>
+  </section>
 <% } %>

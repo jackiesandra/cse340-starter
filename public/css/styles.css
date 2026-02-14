@@ -739,3 +739,64 @@ footer a {
     align-items: center;
   }
 }
+.favorites-grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.fav-card{
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+  background: #fff;
+  align-items: center;
+}
+
+.fav-thumb img{
+  width: 120px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+  display: block;
+}
+
+.fav-title{
+  margin: 0 0 .35rem 0;
+  font-size: 1.2rem;
+}
+
+.fav-title a{
+  text-decoration: none;
+}
+
+.fav-meta, .fav-price{
+  margin: .25rem 0;
+}
+
+.fav-actions{
+  margin-top: .75rem;
+  display: flex;
+  gap: .5rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.btn-secondary{
+  display: inline-block;
+  padding: .5rem .85rem;
+  border: 1px solid #333;
+  border-radius: 8px;
+  text-decoration: none;
+}
+
+.btn-danger{
+  padding: .55rem .85rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
